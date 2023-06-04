@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TemplateWebAPI.Models;
 
 namespace TemplateWebAPI.Controllers
 {
@@ -19,10 +20,10 @@ namespace TemplateWebAPI.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("{days}", Name = "GetWeatherForecast")]
+        public IEnumerable<WeatherForecast> Get(Days days)
         {
-            return Enumerable.Range(1, 6).Select(index => new WeatherForecast {
+            return Enumerable.Range(days.From, days.To).Select(index => new WeatherForecast {
                     Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
                     TemperatureC = Random.Shared.Next(-20, 55),
                     Summary = Summaries[Random.Shared.Next(Summaries.Length)]

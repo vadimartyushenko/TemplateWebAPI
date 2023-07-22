@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace TemplateMinimalAPI
 {
     public class Program
@@ -34,9 +36,21 @@ namespace TemplateMinimalAPI
                 return forecast;
             });
 
-            app.MapGet("say-hello", async context =>
+            app.MapGet("/say-hello", async context =>
             {
                 await context.Response.WriteAsync("Hello, everybody!");
+            });
+
+            app.MapGet("/env", async context =>
+            {
+                var hostEnvironment = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
+                var thisEnv = new
+                {
+                    ApplicationName = hostEnvironment.ApplicationName,
+                    Environment = hostEnvironment.EnvironmentName
+                };
+                var jsonSerializerOptions = new JsonSerializerOptions { WriteIndented = true };
+                await context.Response.WriteAsJsonAsync(thisEnv, jsonSerializerOptions);
             });
 
             app.Run();
